@@ -1,8 +1,8 @@
 
-from schemas.Users import Users
+from schemas.Profile import Profile
 
 
-class Students (Users):
+class Students (Profile):
     student_id :int
     birthDate: str
     address:str

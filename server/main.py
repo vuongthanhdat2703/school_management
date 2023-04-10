@@ -1,8 +1,9 @@
 
 from fastapi import FastAPI
-# from services.Login_admin import route
-# from services.Student import route
-from services.Class import route
+# from services import Login_admin
+# from services import Student
+from services import Login_user
+# from services import Class
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -15,4 +16,7 @@ app.add_middleware(
     allow_headers = ["*"]
 )
 
-app.include_router(route)
+# app.include_router(Login_admin.route)
+# app.include_router(Student.route)
+# app.include_router(Class.route)
+app.include_router(Login_user.route)

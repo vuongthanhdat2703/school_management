@@ -1,14 +1,14 @@
 from fastapi import APIRouter
-from schemas.Login import Logins
+from schemas.Users import Users
 from config.db import conn
-from models.Login import Account
+from models.Users import User
 
 route = APIRouter()
 
 @route.get('/login')
 async def fetchLogin():
     logins_admin = []
-    for row in conn.execute(Account.select()).fetchall():
+    for row in conn.execute(User.select()).fetchall():
         login_data = {
             'ID':row.id,
             'UserName':row.username,
@@ -20,8 +20,8 @@ async def fetchLogin():
     return {'data':logins_admin}
 
 @route.post('/api/login')
-async def createLogin(student_body :Logins):
-    query = conn.execute(Account.select().where(Account.c.username == student_body.username)).fetchone()
+async def createLogin(student_body :Users):
+    query = conn.execute(User.select().where(User.c.username == student_body.username)).fetchone()
 
     if (student_body.password == query[2]):
         return {"message": "Login successful", "err": False }

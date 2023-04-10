@@ -1,18 +1,16 @@
-from sqlalchemy import Column
+from sqlalchemy import Column,ForeignKey
 from config.db import Base, engine
-from sqlalchemy.sql.sqltypes import Integer,String
+from sqlalchemy.sql.sqltypes import Integer,String,INT
 from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "user"
-    id = Column(Integer, primary_key= True, index=True)
-    lastname = Column (String(50))
-    firstname = Column (String(50))
-    gender = Column (String(50))
-    phone = Column (String(50))
-    email = Column (String(50),unique=True,index=True)
 
-    accounts = relationship ("Account", back_populates= "users")
-    students = relationship("Student",back_populates="users")
-
+    id = Column( Integer, primary_key = True, index= True)
+    username = Column(String,unique=True)
+    password = Column(String)
+    role = Column(INT)
+    
+    profiles = relationship("Profile", back_populates="user") 
+ 
 Base.metadata.create_all(bind=engine)

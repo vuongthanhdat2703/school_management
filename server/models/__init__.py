@@ -1,4 +1,4 @@
-from .Department import *
+
+from .Profile import *
 from .Users import *
-from .Login import *
 from .Student import *

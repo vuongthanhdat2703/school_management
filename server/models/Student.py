@@ -6,12 +6,12 @@ class Student (Base):
     __tablename__ = "student"
 
     student_id = Column (Integer, primary_key=True,index=True)
-    birthDate = Column (String(50))
+    
     address = Column(String(50))    
     user_id = Column(ForeignKey("user.id"))
     class_id = Column(ForeignKey("class.class_id"))
     
-    users = relationship ("User", back_populates="students")
+    # profiles = relationship ("Profile", back_populates="students")
     # classes = relationship ("Class" ,back_populates="students")
 
 Base.metadata.create_all(bind=engine)

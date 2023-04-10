@@ -45,7 +45,6 @@ def create_class(class_bd: ClassSchema,db:Session=Depends(get_db)):
         db.refresh(new_faculty)
         
         new_class = Class(
-            class_id = class_bd.class_id,
             class_name = class_bd.class_name,
             faculty_id = new_faculty.id
         )
@@ -54,20 +53,24 @@ def create_class(class_bd: ClassSchema,db:Session=Depends(get_db)):
         db.commit()
         db.refresh(new_class)   
         
-        
-        return {"message":"New class information "}
+        new_class.faculty_name = class_bd.faculty_name
+        return new_class
     except:
         raise HTTPException(400, detail="Bad class information")
     
 @route.put("/class/{class_id}")
-def update_class (class_id :int,class_bd: ClassSchema,db:Session = Depends(get_db) ):
+def update_class(class_id :int,body: ClassSchema,db:Session = Depends(get_db) ):
     db_class = db.query(Class).filter(Class.class_id == class_id).first()
+
     if not db_class:
         raise HTTPException(status_code=404, detail="Class not found")
-    class_bd.class_id = class_bd.class_id
-    class_bd.class_name = class_bd.class_name
-    class_bd.faculty_name = class_bd.faculty_name
+    db_class.class_id = body.class_id
+    db_class.class_name = body.class_name
+    db_class.faculty_name = body.faculty_name
+    db.add(db_class)
     db.commit()
+    db.refresh(db_class)
+
     return db_class
 
 @route.delete("/class/{class_id}")

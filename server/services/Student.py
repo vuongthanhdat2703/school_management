@@ -23,7 +23,7 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
     student_dict.update(user_dict)
 
     return student_dict
-
+    
 @route.post("/student/new", response_model=Students)
 def create_student(student_bd :Students,db:Session=Depends(get_db)):
 
