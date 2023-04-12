@@ -6,7 +6,7 @@ from config.db import get_db
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 from schemas import SigninUser ,Setting, SignupUser
-from utils import hash_pwd ,check_pwd
+from utils import hash_pwd, check_pwd, auth_middleware
 
 route = APIRouter()
 
@@ -14,6 +14,31 @@ route = APIRouter()
 @AuthJWT.load_config
 def get_config():
     return Setting()
+
+@route.get("/get_profile/{id}")
+def read_classID(id: int, db: Session = Depends(get_db)):
+    users = db.query(User,Profile).filter(User.id == id).join(Profile).first()
+    if not users:
+        raise HTTPException(status_code=404, detail="Class not found")
+    
+    user_dict = users[0].__dict__
+    profile_dict = users[1].__dict__
+    del user_dict["_sa_instance_state"]
+    del profile_dict["_sa_instance_state"]
+    user_dict.update(profile_dict)
+
+    return user_dict
+
+# @route.get("/get_profile")
+# def read_user(db:Session = Depends(get_db)):
+#     users = db.query(User,Profile).join(Profile).all()
+#     user_list = []
+#     for user in users:
+#         user_dict = user[0].__dict__
+#         profile_dict = user[1].__dict__
+#         user_dict.update(profile_dict)
+#         user_list.append(user_dict)
+#     return user_list
 
 @route.post("/user/signin")
 def sign_in (user : SigninUser ,auth: AuthJWT = Depends(), db : Session = Depends(get_db)):
@@ -46,8 +71,10 @@ def sign_up(user: SignupUser, db: Session = Depends(get_db)):
 
         new_user = User(
             username=user.username, 
-            password=hashed_passwd
+            password=hashed_passwd,
+            role = user.role
             )
+        # print(new_user)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -61,10 +88,29 @@ def sign_up(user: SignupUser, db: Session = Depends(get_db)):
             email = user.email,
             user_id = new_user.id
         )
+        print(new_profile)
         db.add(new_profile)
         db.commit()
         db.refresh(new_profile)
-        print(new_profile)
+        
         return {"message": "New account registed!"}
-    except:
+    except Exception as e:
+        print(e)
         raise HTTPException(400, detail="Bad account information")
+
+
+@route.get("/profile")
+def get_user_profile(db: Session = Depends(get_db), username: str = Depends(auth_middleware)):
+    try:
+        if username is not None:
+            account = db.query(User, Profile).join(Profile).filter(User.username == username).first()
+            user = {k: v for k, v in vars(account[0]).items() if k != "password"}
+            profile = {k: v for k, v in vars(account[1]).items() if k != "id"}
+            profile['isAdmin'] = user['role'] == 0
+            return profile
+    except Exception as e:
+        print(e)
+        raise HTTPException(401, detail="Unauthorized")
+    
+
+    

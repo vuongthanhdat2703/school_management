@@ -16,7 +16,7 @@ class SigninUser(BaseModel):
     username: str
     password: str
 
-
 class SignupUser(Profile):
     username: str
     password: str
+    role : int

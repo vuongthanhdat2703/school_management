@@ -2,9 +2,8 @@
 from schemas.Profile import Profile
 
 
-class Students (Profile):
+class Student(Profile):
     student_id :int
-    birthDate: str
     address:str
     class_id: int
     

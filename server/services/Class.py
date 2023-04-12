@@ -1,11 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
+from starlette.authentication import requires
 from sqlalchemy.orm import Session
 from config.db import get_db
 from models.Class import Class
 from models.Faculty import Faculty
 from schemas.Class import Class as ClassSchema
+from utils import auth_middleware
 
-route = APIRouter()
+# route = APIRouter()
+route = APIRouter(dependencies=[Depends(auth_middleware)])
 
 
 
@@ -35,17 +38,17 @@ def read_classID(class_id: int, db: Session = Depends(get_db)):
     return class_dict
 
 @route.post("/class/new")
-def create_class(class_bd: ClassSchema,db:Session=Depends(get_db)):
+def create_class(body: ClassSchema,db:Session=Depends(get_db)):
     try:
         new_faculty = Faculty(
-            faculty_name = class_bd.faculty_name
+            faculty_name = body.faculty_name
         )
         db.add(new_faculty)
         db.commit()
         db.refresh(new_faculty)
         
         new_class = Class(
-            class_name = class_bd.class_name,
+            class_name = body.class_name,
             faculty_id = new_faculty.id
         )
 
@@ -53,7 +56,7 @@ def create_class(class_bd: ClassSchema,db:Session=Depends(get_db)):
         db.commit()
         db.refresh(new_class)   
         
-        new_class.faculty_name = class_bd.faculty_name
+        new_class.faculty_name = body.faculty_name
         return new_class
     except:
         raise HTTPException(400, detail="Bad class information")

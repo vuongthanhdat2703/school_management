@@ -7,15 +7,15 @@ class Profile(Base):
     __tablename__ = "profile"
 
     id = Column(Integer, primary_key= True, index=True)
-    lastname = Column (String)
-    firstname = Column (String)
+    lastname = Column (String(45))
+    firstname = Column (String(45))
     birthday= Column (Date)
-    gender = Column (String)
-    phone = Column (String)
-    email = Column (String,unique=True,index=True)
+    gender = Column (String(45))
+    phone = Column (String(45))
+    email = Column (String(45),unique=True,index=True)
     user_id = Column(ForeignKey("user.id"))
 
-    users = relationship ("User", back_populates= "profile")
-    # students = relationship("Student",back_populates="profile")
+    users = relationship ("User", back_populates= "profiles")
+    # students = relationship("Student",back_populates="profiles")
 
 Base.metadata.create_all(bind=engine)
