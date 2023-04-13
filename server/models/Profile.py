@@ -13,9 +13,10 @@ class Profile(Base):
     gender = Column (String(45))
     phone = Column (String(45))
     email = Column (String(45),unique=True,index=True)
-    user_id = Column(ForeignKey("user.id"))
+    user_id = Column(ForeignKey("user.id"), nullable=True)
 
     users = relationship ("User", back_populates= "profiles")
-    # students = relationship("Student",back_populates="profiles")
+    students = relationship("Student",back_populates="profiles")
+    teachers = relationship("Teacher",back_populates="profiles")
 
 Base.metadata.create_all(bind=engine)

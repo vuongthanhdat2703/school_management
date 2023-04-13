@@ -10,7 +10,7 @@ from utils import auth_middleware
 # route = APIRouter()
 route = APIRouter(dependencies=[Depends(auth_middleware)])
 
-
+# dependencies=[Depends(auth_middleware)]
 
 @route.get("/class")
 def read_classes(db: Session = Depends(get_db)):
@@ -81,7 +81,9 @@ def delete_class(class_id: int,db : Session = Depends(get_db) ):
     db_class = db.query(Class).filter(Class.class_id == class_id).first() 
     if not db_class:
         raise HTTPException(status_code=404, detail="Class not found")
+    db_faculty = db.query(Faculty).filter(Faculty.id == db_class.faculty_id).first()
     db.delete(db_class)
+    db.delete(db_faculty)
     db.commit()
     return {"message": "Class deleted successfully"}
 

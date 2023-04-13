@@ -15,30 +15,24 @@ route = APIRouter()
 def get_config():
     return Setting()
 
-@route.get("/get_profile/{id}")
-def read_classID(id: int, db: Session = Depends(get_db)):
-    users = db.query(User,Profile).filter(User.id == id).join(Profile).first()
-    if not users:
-        raise HTTPException(status_code=404, detail="Class not found")
+# @route.get("/get_profile/{id}")
+# def read_classID(id: int, db: Session = Depends(get_db)):
+#     users = db.query(User,Profile).filter(User.id == id).join(Profile).first()
+#     if not users:
+#         raise HTTPException(status_code=404, detail="Class not found")
     
-    user_dict = users[0].__dict__
-    profile_dict = users[1].__dict__
-    del user_dict["_sa_instance_state"]
-    del profile_dict["_sa_instance_state"]
-    user_dict.update(profile_dict)
+#     user_dict = users[0].__dict__
+#     profile_dict = users[1].__dict__
+#     del user_dict["_sa_instance_state"]
+#     del profile_dict["_sa_instance_state"]
+#     user_dict.update(profile_dict)
 
-    return user_dict
+#     return user_dict
 
-# @route.get("/get_profile")
-# def read_user(db:Session = Depends(get_db)):
-#     users = db.query(User,Profile).join(Profile).all()
-#     user_list = []
-#     for user in users:
-#         user_dict = user[0].__dict__
-#         profile_dict = user[1].__dict__
-#         user_dict.update(profile_dict)
-#         user_list.append(user_dict)
-#     return user_list
+@route.get("/get_profile")
+def read_user(db:Session = Depends(get_db)):
+    users = db.query(Profile).all()
+    return users
 
 @route.post("/user/signin")
 def sign_in (user : SigninUser ,auth: AuthJWT = Depends(), db : Session = Depends(get_db)):

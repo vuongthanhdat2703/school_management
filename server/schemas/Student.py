@@ -1,9 +1,10 @@
 
-from schemas.Profile import Profile
+from pydantic import BaseModel
 
 
-class Student(Profile):
+class Student(BaseModel):
     student_id :int
     address:str
     class_id: int
+    profile_email:str
     

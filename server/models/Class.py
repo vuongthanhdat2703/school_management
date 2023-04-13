@@ -8,10 +8,10 @@ class Class (Base):
     
     class_id = Column (Integer, primary_key=True)
     class_name = Column(String(50))
-    faculty_id = Column(ForeignKey("faculty.id"))
+    faculty_id = Column(ForeignKey("faculty.id",ondelete="CASCADE"))
     
     faculties = relationship ("Faculty", back_populates="classes")
-    # students = relationship ("Student", back_populates="classes")
+    students = relationship ("Student", back_populates="classes")
 
 Base.metadata.create_all(bind=engine)
 
