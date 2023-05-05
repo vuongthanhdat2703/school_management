@@ -1,0 +1,13 @@
+.class_form_text h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #5a5c69 !important
+}
+
+.class_form_text {
+    justify-content: space-between;
+}
+
+.class_form_text Button {
+    font-weight: 500;
+}

@@ -1,0 +1,40 @@
+.user_form_text h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #5a5c69 !important
+}
+
+.user_form_text {
+    justify-content: space-between;
+}
+
+.user_form_text Button {
+    font-weight: 500;
+}
+
+
+.user_form Table {
+    border: 1px solid white !important;
+    background-color: white !important;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+}
+
+.form-select:focus {
+    border-color: #4d90fe;
+    box-shadow: 0 0 0 0.2rem rgba(77, 144, 254, 0.25);
+}
