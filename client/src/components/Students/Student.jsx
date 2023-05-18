@@ -1,26 +1,30 @@
 import { faPlus, faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { message } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Table } from "react-bootstrap";
 import AuthLayout from "../../layout/AuthLayout";
 import { request } from "../../utils/request";
 import "./Student.css";
 import StudentForm from "./StudentForm";
+import { AppContext } from "../../App";
+import Pagination from 'react-bootstrap/Pagination';
+
 
 function Student() {
   const [students, setStudents] = useState([]);
   const [showStudentData, setShowStudentData] = useState(false);
   const [studentData, setStudentData] = useState(null);
+  const { isAdmin } = useContext(AppContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   useEffect(() => {
-    getStudent()
-  }, []);
-  const getStudent = () => {
     request.get("/get_student").then((response) => {
       setStudents(response.data);
     });
-  }
+  }, []);
+
   const handleDelete = (id) => {
     const newStudent = [...students];
     request.delete(`/student/${id}`).then((response) => {
@@ -37,7 +41,7 @@ function Student() {
     setShowStudentData(true);
     setStudentData(undefined);
   };
-  const handleCloseClassForm = () => {
+  const handleCloseStudentForm = () => {
     setShowStudentData(false);
   };
   const handleSaveStudentForm = (newStudent) => {
@@ -51,23 +55,31 @@ function Student() {
       message.success("Add Student success!");
     }
   };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = students.slice(indexOfFirstItem, indexOfLastItem);
   return (
     <AuthLayout>
       <div className="container student_form">
-        <div className="student_form_text">
+        <div className="student_form_text d-flex mb-5">
           <h1>Student</h1>
-          <Button variant="primary" onClick={handlAppStudent}>
-            <i className="mr-2">
-              <FontAwesomeIcon icon={faPlus} />
-            </i>
-            Add Student
-          </Button>
+          {isAdmin && (
+            <Button variant="primary" onClick={handlAppStudent}>
+              <i className="mr-2">
+                <FontAwesomeIcon icon={faPlus} />
+              </i>
+              Add Student
+            </Button>
+          )}
         </div>
         <StudentForm
           show={showStudentData}
-          onClose={handleCloseClassForm}
+          onClose={handleCloseStudentForm}
           onSave={handleSaveStudentForm}
-          onRefresh={getStudent}
           studentData={studentData}
         />
         <Table striped bordered hover>
@@ -83,11 +95,13 @@ function Student() {
               <th>Day Of Birth</th>
               <th>Phone</th>
               <th>ClassName</th>
-              <th>Actions</th>
+              {isAdmin && (
+                <th>Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
-            {students.map((body) => (
+            {currentItems.map((body) => (
               <tr key={body.id} >
                 <td>{body.id}</td>
                 <td>{body.student_id}</td>
@@ -99,7 +113,7 @@ function Student() {
                 <td>{body.birthday}</td>
                 <td>{body.phone}</td>
                 <td>{body.class_name}</td>
-                <td>
+                {isAdmin && (<td>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(body.id)}
@@ -112,13 +126,36 @@ function Student() {
                   >
                     <FontAwesomeIcon icon={faPenToSquare} />
                   </button>
-                </td>
+                </td>)}
               </tr>
             ))}
 
 
           </tbody>
         </Table>
+        <Pagination>
+          <Pagination.Prev
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          />
+          {students.length > 0 && (
+            <>
+              {students.map((_, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+            </>
+          )}
+          <Pagination.Next
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={indexOfLastItem >= students.length}
+          />
+        </Pagination>
       </div>
     </AuthLayout>
   );

@@ -95,7 +95,6 @@ function TeacherForm(props) {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-
           <Button variant="primary" onClick={handleSave}>
             Save
           </Button>

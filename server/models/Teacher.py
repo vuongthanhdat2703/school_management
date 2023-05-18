@@ -12,6 +12,8 @@ class Teacher (Base):
     profile_id = Column(ForeignKey("profile.profile_id"))
 
     profiles = relationship("Profile", back_populates="teachers")
+    schedules = relationship("Schedule", back_populates="teachers")
+    subjects = relationship("Subject", back_populates="teachers")
 
 
 Base.metadata.create_all(bind=engine)

@@ -9,12 +9,15 @@ import { request } from "../../utils/request";
 import { message } from "antd";
 import { AppContext } from "../../App";
 import AuthLayout from "../../layout/AuthLayout";
+import Pagination from 'react-bootstrap/Pagination';
 
 function Classes() {
     const [classes, setClasses] = useState([]);
     const [showClassForm, setShowClassForm] = useState(false);
     const [classData, setClassData] = useState(null);
     const { isAdmin } = useContext(AppContext)
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
     // Watch information
     useEffect(() => {
         request.get("/class")
@@ -55,6 +58,14 @@ function Classes() {
             message.success('Add Class success!')
         }
     };
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = classes.slice(indexOfFirstItem, indexOfLastItem);
+
 
     return (
         <AuthLayout>
@@ -71,6 +82,7 @@ function Classes() {
                     onClose={handleCloseClassForm}
                     onSave={handleSaveClassForm}
                     classData={classData}
+                    onRefresh={classes}
                 />
                 <div className="table-class">
                     <Table striped bordered hover>
@@ -85,7 +97,7 @@ function Classes() {
                             </tr>
                         </thead>
                         <tbody>
-                            {classes.map((class_bd) => (
+                            {currentItems.map((class_bd) => (
                                 <tr key={class_bd.class_id}>
                                     <td>{class_bd.class_id}</td>
                                     <td>{class_bd.class_name}</td>
@@ -111,6 +123,29 @@ function Classes() {
                         </tbody>
                     </Table>
                 </div>
+                <Pagination>
+                    <Pagination.Prev
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    />
+                    {classes.length > 0 && (
+                        <>
+                            {classes.map((_, index) => (
+                                <Pagination.Item
+                                    key={index}
+                                    active={index + 1 === currentPage}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </Pagination.Item>
+                            ))}
+                        </>
+                    )}
+                    <Pagination.Next
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={indexOfLastItem >= classes.length}
+                    />
+                </Pagination>
             </div>
         </AuthLayout>
     )

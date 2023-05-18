@@ -8,17 +8,20 @@ import AuthLayout from "../../layout/AuthLayout";
 import { request } from "../../utils/request";
 import "./User.css";
 import UserForm from "./UserFrom";
+import Pagination from 'react-bootstrap/Pagination';
 
 function User() {
   const [userData, setUserData] = useState(null);
   const [showUserForm, setShowUserForm] = useState(false);
   const [user, setUser] = useState([]);
   const { isAdmin } = useContext(AppContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   // Delete user
   const handleDelete = (id) => {
     const newUser = [...user];
     request.delete(`/profile/${id}`).then((response) => {
-      // console.log(response);
       setUser(user.filter((item) => item.id !== id));
       message.success("Delete User success!");
     });
@@ -26,14 +29,15 @@ function User() {
 
   // Watch information
   useEffect(() => {
-    getUser()
+    getUser();
   }, []);
 
   const getUser = () => {
     request.get("/get_profile").then((response) => {
       setUser(response.data);
     });
-  }
+  };
+
   const handleEdit = (user_bd) => {
     setUserData(user_bd);
     setShowUserForm(true);
@@ -57,6 +61,14 @@ function User() {
       message.success("Add User success!");
     }
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = user.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <AuthLayout>
@@ -91,25 +103,25 @@ function User() {
             </tr>
           </thead>
           <tbody>
-            {user.map((user_bd) => (
-              <tr key={user_bd.id}>
-                <td>{user_bd.id}</td>
-                <td>{user_bd.lastname}</td>
-                <td>{user_bd.firstname}</td>
-                <td>{user_bd.gender}</td>
-                <td>{user_bd.phone}</td>
-                <td>{user_bd.email}</td>
+            {currentItems.map((body) => (
+              <tr key={body.profile_id}>
+                <td>{body.profile_id}</td>
+                <td>{body.lastname}</td>
+                <td>{body.firstname}</td>
+                <td>{body.gender}</td>
+                <td>{body.phone}</td>
+                <td>{body.email}</td>
                 {isAdmin && (
                   <td>
                     <button
                       className="btn btn-danger"
-                      onClick={() => handleDelete(user_bd.id)}
+                      onClick={() => handleDelete(body.id)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                     <button
                       className="btn btn-primary"
-                      onClick={() => handleEdit(user_bd)}
+                      onClick={() => handleEdit(body)}
                     >
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </button>
@@ -119,6 +131,29 @@ function User() {
             ))}
           </tbody>
         </Table>
+        <Pagination>
+          <Pagination.Prev
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          />
+          {user.length > 0 && (
+            <>
+              {user.map((_, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+            </>
+          )}
+          <Pagination.Next
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={indexOfLastItem >= user.length}
+          />
+        </Pagination>
       </div>
     </AuthLayout>
   );

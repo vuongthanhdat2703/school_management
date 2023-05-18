@@ -1,4 +1,39 @@
-.profile_user{
+.profile_user {
     border: 1px solid white;
     background-color: white;
+    border-radius: 5px;
+    height: 100vh;
+}
+
+.fullname {
+    font-size: 25px;
+}
+
+.text {
+    text-align: left;
+}
+
+.text p {
+    margin-bottom: 35px;
+}
+
+.avt {
+    text-align: center;
+}
+
+.avt .fullname {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.line {
+    border: 1px solid rgb(238, 237, 237);
+}
+
+.information p {
+    margin-bottom: 18px;
+    border: 1px solid rgb(235, 235, 235);
+    background-color: rgb(247, 247, 247);
+    padding: 7px;
 }

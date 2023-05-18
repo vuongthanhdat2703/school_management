@@ -5,10 +5,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { message } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Table } from "react-bootstrap";
 import AuthLayout from "../../layout/AuthLayout";
 import { request } from "../../utils/request";
+import { AppContext } from "../../App";
+import Pagination from 'react-bootstrap/Pagination';
+
 
 import "./Teacher.css";
 import TeacherForm from "./TeacherForm";
@@ -16,6 +19,9 @@ function Teacher() {
   const [teachers, setTeachers] = useState([]);
   const [showTeacherData, setShowTeacherData] = useState(false);
   const [teacherData, setTeacherData] = useState(null);
+  const { isAdmin } = useContext(AppContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     request.get("/get_teacher").then((response) => {
@@ -56,18 +62,27 @@ function Teacher() {
       message.success("Add Teacher success!");
     }
   };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = teachers.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <AuthLayout>
       <div className="container teacher_form">
-        <div className="teacher_form_text">
-          <h1 className="mt-3 mb-4 d-flex ">Teacher</h1>
-          <Button variant="primary" onClick={handleAppTeacher}>
-            <i className="mr-2">
-              <FontAwesomeIcon icon={faPlus} />
-            </i>
-            Add Teacher
-          </Button>
+        <div className="teacher_form_text d-flex mb-5">
+          <h1 >Teacher</h1>
+          {isAdmin && (
+            <Button variant="primary" onClick={handleAppTeacher}>
+              <i className="mr-2">
+                <FontAwesomeIcon icon={faPlus} />
+              </i>
+              Add Teacher
+            </Button>
+          )}
         </div>
         <TeacherForm
           show={showTeacherData}
@@ -87,11 +102,13 @@ function Teacher() {
               <th>Email</th>
               <th>Day Of Birth</th>
               <th>Phone</th>
-              <th>Actions</th>
+              {isAdmin && (
+                <th>Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
-            {teachers.map((body) => (
+            {currentItems.map((body) => (
               <tr key={body.id}>
                 <td>{body.id}</td>
                 <td>{body.teacher_id}</td>
@@ -102,7 +119,7 @@ function Teacher() {
                 <td>{body.email}</td>
                 <td>{body.birthday}</td>
                 <td>{body.phone}</td>
-                <td>
+                {isAdmin && (<td>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(body.id)}
@@ -115,12 +132,36 @@ function Teacher() {
                   >
                     <FontAwesomeIcon icon={faPenToSquare} />
                   </button>
-                </td>
+                </td>)}
               </tr>
             ))}
 
           </tbody>
         </Table>
+        <Pagination>
+          <Pagination.Prev
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          />
+          {teachers.length > 0 && (
+            <>
+              {teachers.map((_, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+            </>
+          )}
+          <Pagination.Next
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={indexOfLastItem >= teachers.length}
+          />
+
+        </Pagination>
       </div>
     </AuthLayout>
   );

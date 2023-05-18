@@ -14,6 +14,7 @@ class Student (Base):
 
     profiles = relationship("Profile", back_populates="students")
     classes = relationship("Class", back_populates="students")
+    schedules = relationship("Schedule", back_populates="students")
 
 
 Base.metadata.create_all(bind=engine)

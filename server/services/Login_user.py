@@ -36,6 +36,23 @@ def read_user(db: Session = Depends(get_db)):
     return users
 
 
+@route.get("/get_profile/{profile_id}")
+def read_profileId(profile_id: int, db: Session = Depends(get_db)):
+    profiles = db.query(Profile, User).filter(
+        Profile.profile_id == profile_id).join(User).first()
+
+    if not profiles:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    profile_dict = profiles[0].__dict__
+    user_dict = profiles[1].__dict__
+    del profile_dict["_sa_instance_state"]
+    del user_dict["_sa_instance_state"]
+    profile_dict.update(user_dict)
+
+    return profile_dict
+
+
 @route.post("/user/signin")
 def sign_in(user: SigninUser, auth: AuthJWT = Depends(), db: Session = Depends(get_db)):
     account_user = db.query(User).filter(
@@ -47,7 +64,8 @@ def sign_in(user: SigninUser, auth: AuthJWT = Depends(), db: Session = Depends(g
     if not is_valid_passwd_user:
         raise HTTPException(status_code=401, detail="Bad username or password")
 
-    access_token = auth.create_access_token(subject=user.username)
+    access_token = auth.create_access_token(
+        subject=user.username, expires_time=60000*60*24)
     refresh_token = auth.create_refresh_token(subject=user.username)
     return {"access_token": access_token, "refresh_token": refresh_token}
 
@@ -92,7 +110,7 @@ def sign_up(user: SignupUser, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_profile)
 
-        return {"message": "New account registed!"}
+        return new_profile
     except Exception as e:
         print(e)
         raise HTTPException(400, detail="Bad account information")
@@ -108,7 +126,8 @@ def get_user_profile(db: Session = Depends(get_db), username: str = Depends(auth
                 account[0]).items() if k != "password"}
             profile = {k: v for k, v in vars(account[1]).items() if k != "id"}
             profile['isAdmin'] = user['role'] == 0
-            profile['isUser'] = user['role'] == 1
+            profile['isStudent'] = user['role'] == 1
+            profile['isTeacher'] = user['role'] == 2
             return profile
     except Exception as e:
         print(e)

@@ -1,60 +1,82 @@
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from "react";
+import AuthLayout from "../../layout/AuthLayout";
+import { request } from "../../utils/request";
 import './Profile.css'
+import { AppContext } from "../../App";
 
-class Profile extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            lastname: 'Nguyen',
-            firstname: 'Van A',
-            gender: 'male',
-            phone: '123456789',
-            address: '123 ABC street',
-            email: 'example@gmail.com',
-        };
-    }
 
-    render() {
-        return (
-            <Container>
-                <Row>
-                    <Col>
-                        <h1>Profile</h1>
-                        <div className="profile_user">
-                            <div className="avt">
-                                <img className="img-profile rounded-circle h-25 w-25"
-                                    src="img/undraw_profile.svg" />
-                                <p>
-                                    <strong>Full Name: </strong>
-                                    {this.state.lastname} {this.state.firstname}
-                                </p>
+function Profile() {
+    const [data, setData] = useState();
+    const { profile } = useContext(AppContext)
+
+    const getUserId = async (profile_id) => {
+        await request.get(`/get_profile/${profile_id}`).then((response) => {
+            setData(response.data);
+        });
+    };
+    useEffect(() => {
+        getUserId(profile.profile_id);
+    }, [profile]);
+    return (
+        <AuthLayout>
+            {data && (
+                <div className="profile_user">
+                    <div className="container-fluid ">
+                        <div className="row ">
+                            <div className="col-sm-4">
+                                <div className="avt">
+                                    <img
+                                        className="img-profile rounded-circle h-50 w-50 mt-3 "
+                                        src="/img/undraw_profile.svg"
+
+                                    />
+                                </div>
                             </div>
-                            <div className="information">
-                                <p>
-                                    <strong>Gender: </strong>
-                                    {this.state.gender}
-                                </p>
-                                <p>
-                                    <strong>Phone: </strong>
-                                    {this.state.phone}
-                                </p>
-                                <p>
-                                    <strong>Address: </strong>
-                                    {this.state.address}
-                                </p>
-                                <p>
-                                    <strong>Email: </strong>
-                                    {this.state.email}
-                                </p>
+                            <div className="col-sm-8">
+                                <div className="mt-5">
+                                    <p className="fullname">
+                                        {data.firstname}{" "}{data.lastname}
+
+                                    </p>
+                                    <p className="">
+                                        <a href="/#">{data.email}</a>
+
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                    </Col>
-                </Row>
-            </Container>
-        );
-    }
+                    </div>
+                    <div className="line mt-5"></div>
+                    <div className="container-fluid ">
+                        <div className="row mt-5">
+                            <div className="col-sm-4">
+                                <div className="text ml-5 ">
+                                    <p>LastName</p>
+                                    <p>FirstName</p>
+                                    <p>Gender</p>
+                                    <p>UserName *</p>
+                                    <p>Password *</p>
+                                    <p>Phone</p>
+                                    <p>Email</p>
+                                </div>
+                            </div>
+                            <div className="col-sm-8">
+                                <div className="information ">
+                                    <p>{data.lastname}</p>
+                                    <p>{data.firstname}</p>
+                                    <p>{data.gender}</p>
+                                    <p>{data.username}</p>
+                                    <p>{data.password}</p>
+                                    <p>{data.phone}</p>
+                                    <p>{data.email}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </AuthLayout>
+    );
 }
 
 export default Profile;

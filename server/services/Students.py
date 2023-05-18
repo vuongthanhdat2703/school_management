@@ -1,7 +1,6 @@
 from config.db import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from models.Class import Class
-
 from models.Profile import Profile
 from models.Student import Student
 from schemas.Student import Student as studentSchemas
@@ -32,21 +31,24 @@ def read_student(db: Session = Depends(get_db)):
     return student_list
 
 
-# @route.get("/student/{student_id}")
-# def read_student(student_id: int, db: Session = Depends(get_db)):
-#     student = db.query(Student, Profile).filter(
-#         Student.id == student_id).join(Profile).first()
+@route.get("/student/{student_id}")
+def read_studentId(student_id: int, db: Session = Depends(get_db)):
+    student = db.query(Student, Profile, Class).filter(
+        Student.student_id == student_id).join(Profile).join(Class).first()
 
-#     if not student:
-#         raise HTTPException(status_code=404, detail="Student not found")
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
 
-#     student_dict = student[0].__dict__
-#     profile_dict = student[1].__dict__
-#     del student_dict["_sa_instance_state"]
-#     del profile_dict["_sa_instance_state"]
-#     student_dict.update(profile_dict)
+    student_dict = student[0].__dict__
+    profile_dict = student[1].__dict__
+    class_dict = student[2].__dict__
+    del student_dict["_sa_instance_state"]
+    del profile_dict["_sa_instance_state"]
+    del class_dict["_sa_instance_state"]
+    student_dict.update(profile_dict)
+    student_dict.update(class_dict)
 
-#     return student_dict
+    return student_dict
 
 
 @route.post("/student/new")
@@ -71,7 +73,7 @@ def create_student(body: studentSchemas, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_student)
 
-        return {"message": "New account student!"}
+        return new_student
     except Exception as e:
         print(e)
         raise HTTPException(
@@ -100,7 +102,7 @@ def update_student(id: int, body: studentSchemas, db: Session = Depends(get_db))
 
         db.commit()
         db.refresh(student)
-        return {"message": "Student updated!"}
+        return student
     except Exception as e:
         print(e)
         raise HTTPException(

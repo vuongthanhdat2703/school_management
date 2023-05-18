@@ -29,18 +29,17 @@ function StudentForm(props) {
                 .then((response) => {
                     props.onSave(response.data);
                     handleClose();
-                    props.getStudent();
+
                 });
         } else {
             // If studentData is not present, create a new student
             request.post("/student/new", formDataStudent).then((response) => {
                 props.onSave(response.data);
                 handleClose();
-                props.getStudent();
             });
         }
 
-        console.log(formDataStudent)
+        // console.log(formDataStudent)
     };
     //cloes form
     const handleClose = () => {

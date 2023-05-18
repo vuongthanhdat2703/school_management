@@ -1,0 +1,27 @@
+.subject_form_text h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #5a5c69 !important
+}
+
+.subject_form_text {
+    justify-content: space-between;
+}
+
+.subject_form_text Button {
+    font-weight: 500;
+}
+
+
+.subject_form .delete-btn {
+    background-color: #f44336;
+    border-radius: 5px;
+    border: 1px solid #f44336;
+}
+
+.subject_form .edit-btn {
+    background-color: #008CBA;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #008CBA;
+}

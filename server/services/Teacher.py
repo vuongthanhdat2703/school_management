@@ -42,7 +42,7 @@ def create_teacher(body: teacherSchemas, db: Session = Depends(get_db)):
         db.add(new_teacher)
         db.commit()
         db.refresh(new_teacher)
-        return {"message": "New account teacher!"}
+        return new_teacher
     except Exception as e:
         print(e)
         raise HTTPException(
@@ -67,7 +67,7 @@ def update_teacher(id: int, body: teacherSchemas, db: Session = Depends(get_db))
 
         db.commit()
         db.refresh(teacher)
-        return {"message": "Teacher updated!"}
+        return teacher
     except Exception as e:
         print(e)
         raise HTTPException(

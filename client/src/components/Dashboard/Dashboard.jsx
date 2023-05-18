@@ -121,7 +121,8 @@ function Dashboard() {
                                             </div>
                                             <div className="account">
                                                 <div className="avt">
-                                                    <img src='https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2020/8/21/829850/Bat-Cuoi-Truoc-Nhung-07.jpg'></img>
+                                                    <img className="img-profile rounded-circle"
+                                                        src="/img/undraw_profile_3.svg" />
                                                 </div>
                                                 <div className="text-1">
                                                     <div className="name-user">
@@ -146,7 +147,8 @@ function Dashboard() {
                                             <div className="line"></div>
                                             <div className="account">
                                                 <div className="avt">
-                                                    <img src='https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2020/8/21/829850/Bat-Cuoi-Truoc-Nhung-07.jpg'></img>
+                                                    <img className="img-profile rounded-circle"
+                                                        src="/img/undraw_profile_1.svg" />
                                                 </div>
                                                 <div className="text-1">
                                                     <div className="name-user">
@@ -169,7 +171,8 @@ function Dashboard() {
                                             <div className="line"></div>
                                             <div className="account">
                                                 <div className="avt">
-                                                    <img src='https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2020/8/21/829850/Bat-Cuoi-Truoc-Nhung-07.jpg'></img>
+                                                    <img className="img-profile rounded-circle"
+                                                        src="/img/undraw_profile_2.svg" />
                                                 </div>
                                                 <div className="text-1">
                                                     <div className="name-user">
@@ -201,14 +204,6 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                        <footer className="sticky-footer bg-white">
-                            <div className="container my-auto">
-                                <div className="copyright text-center my-auto">
-                                    <span>Copyright &copy; Your Website 2021</span>
-                                </div>
-                            </div>
-                        </footer>
-                        {/* <!-- End of Footer --> */}
                     </div>
                     {/*  <!-- End of Content Wrapper --> */}
                 </div>
@@ -218,7 +213,7 @@ function Dashboard() {
                     <i className="fas fa-angle-up"></i>
                 </a>
                 {/*  <!-- Logout Modal--> */}
-                <div className="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                <div className="modal fade" id="logoutModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">

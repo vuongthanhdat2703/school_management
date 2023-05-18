@@ -96,6 +96,7 @@ function UserForm(props) {
                             onChange={handleChange}>
                             <option value="0">Admin</option>
                             <option value="1">Student</option>
+                            <option value="2">Teacher</option>
                         </Form.Select>
 
 

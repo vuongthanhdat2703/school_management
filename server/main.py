@@ -6,6 +6,8 @@ from services import Classes
 from services import Login_user
 from services import Teacher
 from services import Faculties
+from services import Subjects_a
+from services import Schedules
 from fastapi.middleware.cors import CORSMiddleware
 # from fastapi_auth_middleware import AuthMiddleware
 
@@ -24,4 +26,6 @@ app.include_router(Classes.route)
 app.include_router(Login_user.route)
 app.include_router(Teacher.route)
 app.include_router(Faculties.route)
+app.include_router(Subjects_a.route)
+app.include_router(Schedules.route)
 # app.add_middleware(AuthMiddleware, verify_header=verify_authorization_header)

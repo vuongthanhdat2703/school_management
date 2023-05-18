@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../App'
 import { message } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserGraduate, faUserPen, faGraduationCap, faUser, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faUserGraduate, faUserPen, faGraduationCap, faUser, faCalendarDay, faBook } from '@fortawesome/free-solid-svg-icons'
 import './AuthLayout.css'
 
 function AuthLayout({ children }) {
@@ -22,7 +22,7 @@ function AuthLayout({ children }) {
         }
         if (token) {
             request.get('/profile').then(({ data }) => {
-                console.log(data)
+                // console.log(data)
                 setProfile(data)
             })
         } else {
@@ -63,7 +63,6 @@ function AuthLayout({ children }) {
             <div className="row">
                 <div className="col-sm-2 form_home">
                     <ul className={style} id="accordionSidebar">
-                        {/*  <!-- Sidebar - Brand --> */}
                         <a className="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                             <div className="sidebar-brand-icon rotate-n-15">
                                 <i className="fas fa-laugh-wink"></i>
@@ -73,17 +72,13 @@ function AuthLayout({ children }) {
                                 <button className="rounded-circle border-0" id="sidebarToggle" onClick={changeStyle}></button>
                             </div>
                         </a>
-                        {/*   <!-- Divider --> */}
                         <hr className="sidebar-divider my-0" />
-                        {/*  <!-- Nav Item - Dashboard --> */}
                         <li className="nav-item active" onClick={() => setCurrentTab("dashboard")}>
                             <a className="nav-link">
                                 <i className="fas fa-fw fa-tachometer-alt"></i>
                                 <span>Dashboard</span></a>
                         </li>
-                        {/*  <!-- Divider --> */}
                         <hr className="sidebar-divider" />
-                        {/*   <!-- Heading --> */}
                         <div className="sidebar-heading">
                             Interface
                         </div>
@@ -104,18 +99,24 @@ function AuthLayout({ children }) {
                                 <i className="class"><FontAwesomeIcon icon={faGraduationCap} /></i>
                                 <span>Class</span></a>
                         </li>
-                        {isUser && (
-                            <li className="nav-item" onClick={() => setCurrentTab("class_schedule")}>
-                                <a className="nav-link">
-                                    <i><FontAwesomeIcon icon={faBook} /></i>
-                                    <span>Class Schedule</span></a>
-                            </li>
-                        )}
+
+                        <li className="nav-item" onClick={() => setCurrentTab("class_schedule")}>
+                            <a className="nav-link">
+                                <i><FontAwesomeIcon icon={faCalendarDay} /></i>
+                                <span>Schedule</span></a>
+                        </li>
+                        <li className="nav-item" onClick={() => setCurrentTab("subject")}>
+                            <a className="nav-link">
+                                <i className="subject"><FontAwesomeIcon icon={faBook} /></i>
+                                <span>Subject</span></a>
+                        </li>
+
                         <li className="nav-item" onClick={() => setCurrentTab("user")}>
                             <a className="nav-link">
                                 <i className="user"><FontAwesomeIcon icon={faUser} /></i>
                                 <span>User</span></a>
                         </li>
+
                         {/* <!-- Nav Item - Utilities Collapse Menu --> */}
                         {/* <li className="nav-item">
                                     <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"

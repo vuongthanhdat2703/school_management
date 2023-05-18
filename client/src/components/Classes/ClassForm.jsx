@@ -4,10 +4,10 @@ import { request } from '../../utils/request';
 
 function ClassForm(props) {
     const [formDataClass, setFormDataClass] = useState({});
-    const [faculties, setFaculties] = useState([]);
+    const [faculty, setFaculty] = useState([]);
 
     useEffect(() => {
-        getFaculty()
+
         setFormDataClass({
             ...props.classData,
             class_name: props.classData ? props.classData.class_name : "",
@@ -16,11 +16,12 @@ function ClassForm(props) {
         })
     }, [props.classData])
 
-    const getFaculty = (id) => {
-        request.get(`/faculty/${id}`, formDataClass).then(response => {
-            setFaculties(response.data)
-        })
-    }
+    useEffect(() => {
+        request.get("/get_faculty")
+            .then(response => {
+                setFaculty(response.data);
+            })
+    }, []);
 
 
     const handleChange = (event) => {
@@ -81,9 +82,9 @@ function ClassForm(props) {
                             value={formDataClass.id}
                             onChange={handleChange}
                         >
-                            {faculties.map((faculty) => (
-                                <option key={faculty.id} value={faculty.id}>
-                                    {faculty.name}
+                            {faculty.map((body) => (
+                                <option key={body.id} value={body.id}>
+                                    {body.faculty_name}
                                 </option>
                             ))}
                         </Form.Select>
